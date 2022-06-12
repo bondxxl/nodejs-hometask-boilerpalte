@@ -12,7 +12,7 @@ router.get('/', function(req, res, next) {
     res.send(`${all.reduce((res, el) => res + el.id + '\n', '')}`);
 });
 
-router.post('/', function(req, res, next) {
+router.post('/', createUserValid, function(req, res, next) {
 //    email, password, firstName, lastName, phoneNumber
     res.send(UserService.create(req.body).id);
 });
@@ -24,7 +24,7 @@ router.get('/:id', function(req, res, next) {
     }
 });
 
-router.put('/:id', function(req, res, next) {
+router.put('/:id', updateUserValid, function(req, res, next) {
     let updated = UserService.update(req.params.id, req.body);
     if (updated) {
         res.send(`Updated ${updated.id}`);
