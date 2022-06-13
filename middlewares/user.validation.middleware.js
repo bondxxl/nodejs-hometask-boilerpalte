@@ -6,8 +6,8 @@ const phoneRGEX = /^\+380\d{9}$/;
 
 const createUserValid = (req, res, next) => {
     // TODO: Implement validatior for user entity during creation
-    let keys = Object.keys(req.body);
-    let modelKeys = Object.keys(user);
+    const keys = Object.keys(req.body);
+    const modelKeys = Object.keys(user);
     const Check = {
         is: function (predicate, message) {
             try {
@@ -17,6 +17,7 @@ const createUserValid = (req, res, next) => {
                 throw Error(message);
             } catch (err) {
                 // next(err);
+                res.status(400);
                 res.err = err;
                 next();
             }
@@ -38,9 +39,9 @@ const createUserValid = (req, res, next) => {
 
 const updateUserValid = (req, res, next) => {
     // TODO: Implement validatior for user entity during update
-    let keys = Object.keys(req.body);
-    console.log(keys);
-    let modelKeys = Object.keys(user);
+    const keys = Object.keys(req.body);
+    // console.log(keys);
+    const modelKeys = Object.keys(user);
     const Check = {
         is: function (predicate, message) {
             try {
@@ -50,6 +51,7 @@ const updateUserValid = (req, res, next) => {
                 throw Error(message);
             } catch (err) {
                 // next(err);
+                res.status(400);
                 res.err = err;
                 next();
             }

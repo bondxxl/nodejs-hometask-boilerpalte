@@ -8,57 +8,90 @@ const router = Router();
 // TODO: Implement route controllers for user
 
 router.get('/', function (req, res, next) {
-    let all = UserService.getAll();
-    res.send(`${all.reduce((res, el) => res + el.id + '\n', '')}`);
-});
+    const all = UserService.getAll();
+    try {
+        if (all) {
+            res.data = all;
+        } else {
+            throw Error("Unable to get users");
+        }
+    } catch (err) {
+        // next(err);
+        res.status(404);
+        res.err = err;
+    } finally {
+        next();
+    }
+}, responseMiddleware);
 
 router.post('/', createUserValid, function (req, res, next) {
 //    email, password, firstName, lastName, phoneNumber
-    let created = UserService.create(req.body);
+    const created = UserService.create(req.body);
     try {
         if (created) {
             res.data = created;
-            next();
         } else {
             throw Error("Unable to create user");
         }
     } catch (err) {
         // next(err);
+        res.status(400);
         res.err = err;
+    } finally {
         next();
     }
 
 }, responseMiddleware);
 
 router.get('/:id', function (req, res, next) {
-    let user = UserService.getById(req.params.id);
-    if (user) {
-        res.send(`Hi, ${user.id}`);
+    const found = UserService.getById(req.params.id);
+    try {
+        if (found) {
+            res.data = found;
+        } else {
+            throw Error("User not found");
+        }
+    } catch (err) {
+        // next(err);
+        res.status(404);
+        res.err = err;
+    } finally {
+        next();
     }
-});
+}, responseMiddleware);
 
 router.put('/:id', updateUserValid, function (req, res, next) {
-    let updated = UserService.update(req.params.id, req.body);
+    const updated = UserService.update(req.params.id, req.body);
     try {
         if (updated) {
             res.data = updated;
-            next();
         } else {
             throw Error("Unable to update user");
         }
     } catch (err) {
         // next(err);
+        res.status(400);
         res.err = err;
+    } finally {
         next();
     }
 }, responseMiddleware);
 
 router.delete('/:id', function (req, res, next) {
-    let deleted = UserService.delete(req.params.id);
-    console.log(`deleted: `, deleted);
-    if (deleted.length) {
-        res.send(`Deleted ${deleted[0].id}`);
+    const deleted = UserService.delete(req.params.id);
+    try {
+        if (deleted.length) {
+            res.data = deleted;
+        } else {
+            throw Error("Unable to delete user");
+        }
+    } catch (err) {
+        // next(err);
+        res.status(400);
+        res.err = err;
+    } finally {
+        next();
     }
-});
+}, responseMiddleware);
 
 module.exports = router;
