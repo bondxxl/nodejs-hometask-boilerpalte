@@ -8,43 +8,66 @@ const createUserValid = (req, res, next) => {
     // TODO: Implement validatior for user entity during creation
     let keys = Object.keys(req.body);
     let modelKeys = Object.keys(user);
-    if (
-        //    email, password, firstName, lastName, phoneNumber
-        req.body
-        && keys.length === modelKeys.length - 1
-        && !keys.includes('id')
-        && String(req.body.firstName).length > 0
-        && String(req.body.lastName).length > 0
-        && keys.every(key => modelKeys.includes(key))
-        && gmailRGEX.test(req.body.email)
-        && phoneRGEX.test(req.body.phoneNumber)
-        && String(req.body.password).length >= 3
-    ) {
-        next();
-    } else {
-        res.status(400).send()
+    const Check = {
+        is: function (predicate, message) {
+            try {
+                if (predicate) {
+                    return this;
+                }
+                throw Error(message);
+            } catch (err) {
+                // next(err);
+                res.err = err;
+                next();
+            }
+        },
+        end: () => next()
     }
+    Check
+        .is(req.body, "User is empty")
+        .is(keys.length === modelKeys.length - 1, "Mismatch number of properties")
+        .is(!keys.includes('id'), "User contains id")
+        .is(String(req.body.firstName).length > 0, "Firstname is empty")
+        .is(String(req.body.lastName).length > 0, "Lastname is empty")
+        .is(keys.every(key => modelKeys.includes(key)), "Mismatch keys of properties")
+        .is(gmailRGEX.test(req.body.email), "Incorrect gmail")
+        .is(phoneRGEX.test(req.body.phoneNumber), "Incorrect phone number format")
+        .is(String(req.body.password).length >= 3, "Password length less then 3")
+        .end()
 }
 
 const updateUserValid = (req, res, next) => {
     // TODO: Implement validatior for user entity during update
     let keys = Object.keys(req.body);
+    console.log(keys);
     let modelKeys = Object.keys(user);
-    if (
-        req.body
-        && keys.length
-        && !keys.includes('id')
-        && keys.every(key => modelKeys.includes(key))
-        && (!req.body.firstName || String(req.body.firstName).length > 0)
-        && (!req.body.lastName || String(req.body.lastName).length > 0)
-        && (!req.body.email || gmailRGEX.test(req.body.email))
-        && (!req.body.phoneNumber || phoneRGEX.test(req.body.phoneNumber))
-        && (!req.body.password || String(req.body.password).length >= 3)
-    ) {
-        next();
-    } else {
-        res.status(400).send()
+    const Check = {
+        is: function (predicate, message) {
+            try {
+                if (predicate) {
+                    return this;
+                }
+                throw Error(message);
+            } catch (err) {
+                // next(err);
+                res.err = err;
+                next();
+            }
+        },
+        end: () => next()
     }
+
+    Check
+        .is(req.body, "User is empty")
+        .is(keys.length, "User haven't properties")
+        .is(!keys.includes('id'), "User contains id")
+        .is(keys.every(key => modelKeys.includes(key)), "Mismatch keys of properties")
+        .is((!keys.includes('firstName') || String(req.body.firstName).length > 0), "Firstname is empty")
+        .is((!keys.includes('lastName') || String(req.body.lastName).length > 0), "Lastname is empty")
+        .is((!req.body.email || gmailRGEX.test(req.body.email)), "Incorrect gmail")
+        .is((!req.body.phoneNumber || phoneRGEX.test(req.body.phoneNumber)), "Incorrect phone number format")
+        .is((!req.body.password || String(req.body.password).length > 2), "Password length less then 3")
+        .end()
 }
 
 exports.createUserValid = createUserValid;
