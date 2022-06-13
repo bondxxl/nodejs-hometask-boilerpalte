@@ -14,7 +14,6 @@ class UserService {
         if(!all) {
             return null;
         }
-        // console.log(all);
         return all;
     }
 
@@ -34,7 +33,7 @@ class UserService {
     }
 
     getByName(name) {
-        let found = this.search({name: name.toLowerCase()});
+        let found = this.search({name: name});
         return found;
     }
 

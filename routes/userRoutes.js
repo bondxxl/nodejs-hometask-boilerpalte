@@ -26,8 +26,13 @@ router.get('/', function (req, res, next) {
 
 router.post('/', createUserValid, function (req, res, next) {
 //    email, password, firstName, lastName, phoneNumber
-    const created = UserService.create(req.body);
     try {
+        if (UserService.getByPhoneNumber(req.body.phoneNumber)) {
+            throw Error("The user with this phone already exists");
+        } else if (UserService.getByEmail(req.body.email)) {
+            throw Error("The user with this email already exists");
+        }
+        const created = UserService.create(req.body);
         if (created) {
             res.data = created;
         } else {
@@ -40,7 +45,6 @@ router.post('/', createUserValid, function (req, res, next) {
     } finally {
         next();
     }
-
 }, responseMiddleware);
 
 router.get('/:id', function (req, res, next) {
