@@ -4,6 +4,9 @@ class FighterService {
     // TODO: Implement methods to work with fighters
 
     create(data) {
+        if (!data.health) {
+            data.health = 100;
+        }
         const newUser = FighterRepository.create(data);
         return newUser;
     }

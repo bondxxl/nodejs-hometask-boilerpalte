@@ -15,8 +15,8 @@ const createFighterValid = (req, res, next) => {
             } catch (err) {
                 // next(err);
                 res.status(400);
-                res.err = err;
-                next();
+                // res.err = err;
+                next(err);
             }
         },
         end: () => next()
@@ -24,6 +24,7 @@ const createFighterValid = (req, res, next) => {
     // power - число, 1 <= power <= 100
     // defense - число, 1 <= defense <= 10
     // health - число, 80 <= health <= 120, необов'язкове поле(за замовчуванням - 100)
+    console.log(String(req.body.name).length);
     Check
         .is(req.body, "Fighter data is empty")
         .is(keys.length < modelKeys.length && keys.length > modelKeys.length - 3, "Mismatch number of properties")
