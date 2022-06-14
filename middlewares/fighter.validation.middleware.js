@@ -13,9 +13,6 @@ const createFighterValid = (req, res, next) => {
                 }
                 throw Error(message);
             } catch (err) {
-                // next(err);
-                res.status(400);
-                // res.err = err;
                 next(err);
             }
         },
@@ -51,10 +48,7 @@ const updateFighterValid = (req, res, next) => {
                 }
                 throw Error(message);
             } catch (err) {
-                // next(err);
-                res.status(400);
-                res.err = err;
-                next();
+                next(err);
             }
         },
         end: () => next()
