@@ -67,8 +67,11 @@ router.get('/:id', function (req, res, next) {
 }, errorResponder, responseMiddleware);
 
 router.put('/:id', updateUserValid, function (req, res, next) {
-    const updated = UserService.update(req.params.id, req.body);
     try {
+        if (!UserService.getById(req.params.id)) {
+            throw Error("User doesn't exist");
+        }
+        const updated = UserService.update(req.params.id, req.body);
         if (updated) {
             res.data = updated;
             next();
@@ -76,6 +79,11 @@ router.put('/:id', updateUserValid, function (req, res, next) {
             throw Error("Unable to update user");
         }
     } catch (err) {
+/*        switch (err.message) {
+            case 'User doesn't exist':
+                err.status = 404;
+                break;
+        }*/
         next(err);
     }
 }, errorResponder, responseMiddleware);

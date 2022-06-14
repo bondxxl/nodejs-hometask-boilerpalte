@@ -9,7 +9,7 @@ const router = Router();
 
 const errorResponder = (err, req, res, next) => {
     res.header("Content-Type", 'application/json')
-    console.log(err.status);
+
     const status = err.status || 400
     res.status(status);
     res.err = err;
@@ -67,8 +67,11 @@ router.get('/:id', function (req, res, next) {
 }, errorResponder, responseMiddleware);
 
 router.put('/:id', updateFighterValid, function (req, res, next) {
-    const updated = FighterService.update(req.params.id, req.body);
     try {
+        if (!FighterService.getById(req.params.id)) {
+            throw Error("Fighter doesn't exist");
+        }
+        const updated = FighterService.update(req.params.id, req.body);
         if (updated) {
             res.data = updated;
             next();
@@ -76,6 +79,11 @@ router.put('/:id', updateFighterValid, function (req, res, next) {
             throw Error("Unable to update fighter");
         }
     } catch (err) {
+/*        switch (err.message) {
+            case 'Fighter doesn't exist':
+                err.status = 404;
+                break;
+        }*/
         next(err);
     }
 }, errorResponder, responseMiddleware);
