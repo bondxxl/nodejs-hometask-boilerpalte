@@ -26,7 +26,7 @@ router.get('/', function (req, res, next) {
             throw Error("Unable to get users");
         }
     } catch (err) {
-        res.status(404);
+        err.status = 404;
         next(err);
     }
 }, errorResponder, responseMiddleware);
@@ -39,7 +39,7 @@ router.post('/', createUserValid, function (req, res, next) {
         } else if (UserService.getByEmail(req.body.email)) {
             throw Error("The user with this email already exists");
         }
-        const created = UserService.create(req.body);
+        let created = UserService.create(req.body);
         if (created) {
             res.data = created;
             next();
@@ -61,7 +61,7 @@ router.get('/:id', function (req, res, next) {
             throw Error("User not found");
         }
     } catch (err) {
-        res.status(404);
+        err.status = 404;
         next(err);
     }
 }, errorResponder, responseMiddleware);
