@@ -9,7 +9,7 @@ const router = Router();
 
 const errorResponder = (err, req, res, next) => {
     res.header("Content-Type", 'application/json')
-
+    console.log(err.status);
     const status = err.status || 400
     res.status(status);
     res.err = err;
@@ -21,19 +21,20 @@ router.get('/', function (req, res, next) {
     try {
         if (all) {
             res.data = all;
+            next();
         } else {
             throw Error("Unable to get fighters");
         }
     } catch (err) {
-        res.status(404);
+        err.status = 404;
         next(err);
     }
 }, errorResponder, responseMiddleware);
 
 router.post('/', createFighterValid, function (req, res, next) {
     try {
-        // let regExp = new RegExp(`/${req.body.name}/`, 'i');
-        // if (FighterService.getAll().some(fighter => fighter.name.match(regExp))) {
+/*        let regExp = new RegExp(`${req.body.name}`, 'i');
+        if (FighterService.getAll().some(fighter => fighter.name.match(regExp))) {*/
         if (FighterService.getAll()
             .some(fighter => fighter.name.toLowerCase() === req.body.name.toLowerCase())) {
             throw Error("The fighter with this name already exists");
@@ -41,11 +42,11 @@ router.post('/', createFighterValid, function (req, res, next) {
         const created = FighterService.create(req.body);
         if (created) {
             res.data = created;
+            next();
         } else {
             throw Error("Unable to create fighter");
         }
     } catch (err) {
-        // res.status(400);
         next(err);
     }
 }, errorResponder, responseMiddleware);
@@ -55,11 +56,12 @@ router.get('/:id', function (req, res, next) {
     try {
         if (found) {
             res.data = found;
+            next();
         } else {
             throw Error("Fighter not found");
         }
     } catch (err) {
-        res.status(404);
+        err.status = 404;
         next(err);
     }
 }, errorResponder, responseMiddleware);
@@ -69,6 +71,7 @@ router.put('/:id', updateFighterValid, function (req, res, next) {
     try {
         if (updated) {
             res.data = updated;
+            next();
         } else {
             throw Error("Unable to update fighter");
         }
@@ -82,6 +85,7 @@ router.delete('/:id', function (req, res, next) {
     try {
         if (deleted.length) {
             res.data = deleted;
+            next();
         } else {
             throw Error("Unable to delete fighter");
         }
