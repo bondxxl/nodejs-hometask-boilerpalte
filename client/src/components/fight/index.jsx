@@ -4,6 +4,7 @@ import { getFighters } from '../../services/domainRequest/fightersRequest';
 import NewFighter from '../newFighter';
 import Fighter from '../fighter';
 import { Button } from '@material-ui/core';
+import { renderArena } from './arena';
 
 import './fight.css'
 
@@ -22,7 +23,14 @@ class Fight extends React.Component {
     }
 
     onFightStart = () => {
-        
+        const { fighter1, fighter2 } = this.state;
+        if (!fighter1.source) {
+            fighter1.source = 'https://www.fightersgeneration.com/nf9/char/gifs/vega-ultra-sf4-stance.gif';
+        }
+        if (!fighter2.source) {
+            fighter2.source = 'https://www.fightersgeneration.com/characters3/sean-ts-stance.gif'
+        }
+        renderArena([fighter1, fighter2]);
     }
 
     onCreate = (fighter) => {

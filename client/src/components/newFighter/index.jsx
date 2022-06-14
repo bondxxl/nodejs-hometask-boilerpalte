@@ -8,6 +8,7 @@ export default function NewFighter({ onCreated }) {
     const [name, setName] = useState();
     const [power, setPower] = useState();
     const [defense, setDefense] = useState();
+    // const [src, setSrc] = useState();
 
     const onNameChange = (event) => {
         setName(event.target.value);
@@ -23,8 +24,13 @@ export default function NewFighter({ onCreated }) {
         setDefense(value);
     }
 
+/*    const onSrcChange = (event) => {
+        const value = event.target.value || event.target.value === 0 ? String(event.target.value) : null;
+        setSrc(value);
+    }*/
+
     const onSubmit = async () => {
-        const data = await createFighter({ name, power, defense });
+        const data = await createFighter({ name, power, defense/*, src*/ });
         if(data && !data.error) {
             onCreated(data);
         }
@@ -36,6 +42,7 @@ export default function NewFighter({ onCreated }) {
             <TextField onChange={onNameChange} id="standard-basic" label="Standard" placeholder="Name"/>
             <TextField onChange={onPowerChange} id="standard-basic" label="Standard" placeholder="Power" type="number" />
             <TextField onChange={onDefenseChange} id="standard-basic" label="Standard" placeholder="Defense" type="number" />
+            {/*<TextField onChange={onSrcChange} id="standard-basic" label="Standard" placeholder="Gif link" type="string" />*/}
             <Button onClick={onSubmit} variant="contained" color="primary">Create</Button>
         </div>
     );
